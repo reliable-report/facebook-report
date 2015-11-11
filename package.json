@@ -1,6 +1,6 @@
 {
-  "name": "nodejs-getting-started",
-  "version": "1.0.0",
+  "name": "reliable-report",
+  "version": "0.0.1",
   "description": "End to end sample for running Node.JS applications on Google Cloud Platform",
   "repository": "https://github.com/GoogleCloudPlatform/nodejs-getting-started",
   "private": true,

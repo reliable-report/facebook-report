@@ -20,8 +20,22 @@ block content
     i.glyphicon.glyphicon-plus
     span  Add book
     
-  #chart_div
+  .chart(
+    data-group="D.group(window.data, [{column:1, modifier:D.month, type:'number', label: 'Month'}], [{column:0, aggregation: D.count, type:'number', label:'posts'}])", 
+    data-opts="{title: 'Number of postings per month', height:'300'}", 
+    data-type="BarChart")
+  
 
+  .chart(
+     data-group="D.group(window.data, [{column:1, modifier:D.month, type:'number', label: 'Month'}], [{column:6, aggregation: D.sum, type:'number', label:'comments'}, {column:5, aggregation: D.sum, type:'number', label:'likes'}, {column:7, aggregation: D.sum, type:'number', label:'shares'}])", 
+     data-opts="{title: 'Number of comments,likes and shares per month', height:'300'}", 
+     data-type="BarChart")
+
+  .chart(
+     data-group="D.group(window.data, [{column:1, modifier:D.month, type:'number', label: 'Month'}], [{column:5, aggregation: D.max, type:'number', label:'Liked'}, {column:6, aggregation: D.max, type:'number', label:'Commented'}, {column:7, aggregation: D.max, type:'number', label:'Shared'}])", 
+     data-opts="{title: 'Tops per month', height:'300'}", 
+     data-type="BarChart")
+     
 
   each book in books
     .media

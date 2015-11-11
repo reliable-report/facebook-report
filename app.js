@@ -44,6 +44,7 @@ app.use(session({
 // OAuth2
 var oauth2 = require('./lib/oauth2')(config.oauth2);
 app.use(oauth2.router);
+app.use(express.static(path.join(__dirname, 'public')));
 
 
 // Setup modules and dependencies
@@ -56,10 +57,13 @@ var model = require('./books/model-' + config.dataBackend)(config, background);
 app.use('/books', require('./books/crud')(model, images, oauth2));
 app.use('/api/books', require('./books/api')(model));
 
+app.use('/facebook/', require('./facebook/crud')(model, images, oauth2, logging));
+app.use('/api/facebook', require('./facebook/api')(model, logging));
+
 
 // Redirect root to /books
 app.get('/', function(req, res) {
-  res.redirect('/books');
+  res.redirect('/facebook');
 });
 
 

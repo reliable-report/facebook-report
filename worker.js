@@ -22,7 +22,6 @@ var logging = require('./lib/logging')(config.logPath);
 var images = require('./lib/images')(config.gcloud, config.cloudStorageBucket, logging);
 var background = require('./lib/background')(config.gcloud, logging);
 
-
 // We'll pass this to the model so that we don't get an infinite loop of book
 // processing requests.
 var backgroundStub = {
@@ -37,7 +36,6 @@ var model = require('./books/model-' + config.dataBackend)(config, backgroundStu
 var app = express();
 
 app.use(logging.requestLogger);
-
 
 app.get('/_ah/health', function(req, res) {
   res.status(200).send('ok');

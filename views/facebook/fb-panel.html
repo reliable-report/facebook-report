@@ -1,0 +1,41 @@
+<!--
+  Below we include the Login Button social plugin. This button uses
+  the JavaScript SDK to present a graphical Login button that triggers
+  the FB.login() function when clicked.
+  -->
+
+<div
+   class="fb-like"
+   data-share="true"
+   data-width="450"
+   data-show-faces="true">
+</div>
+
+
+<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+</fb:login-button>
+
+<div id="status">
+</div>
+
+<div id="igot_ticker" cur="usd" tid="1"></div>
+<script type="text/javascript" src="http://igotwidget.com/embed.js"></script>
+<div id="igotMerchatWidgetContainerID"></div>
+<script type="text/javascript">
+  var script = document.createElement('script');
+  script.src = "https://www.igot.com/widgets/merchant_button.js"
+  document.documentElement.appendChild(script);
+  script.onload= function(){
+  igotMerchantButton.options = {
+  user_id: '10',
+  product_id: '10',
+  purchase_id: '10',
+  application_id: '91',
+  shopping_cart: 'eyIwIjp7Im5hbWUiOiJNb250bHkgc3Vic2NyaXB0aW9uIiwiYW1vdW50IjoiMC4yIiwiY3VycmVuY3kiOiJCVEMifX0=',
+  payment_type: 'subscribe',
+  periodicity: 'month',
+  image_url: 'btn-sub-igot-02.png'
+  }
+  igotMerchantButton.init("igotMerchatWidgetContainerID", {"iframe": "on"})
+  }
+</script>
