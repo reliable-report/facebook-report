@@ -1,8 +1,8 @@
 {
-  "name": "reliable-report",
+  "name": "facebook-report",
   "version": "0.0.1",
   "description": "End to end sample for running Node.JS applications on Google Cloud Platform",
-  "repository": "https://github.com/GoogleCloudPlatform/nodejs-getting-started",
+  "repository": "https://github.com/reliable-report/facebook-report.git",
   "private": true,
   "scripts": {
     "start": "node ${SCRIPT:-app.js}",
@@ -10,7 +10,7 @@
     "deploy": "gcloud preview app deploy app.yaml worker.yaml",
     "init-cloudsql": "node books/model-cloudsql.js"
   },
-  "author": "Jon Wayne Parrott <jonwayne@google.com>, Jonathan Simon <jbsimon@google.com>",
+  "author": "Jon Wayne Parrott <jonwayne@google.com>, Jonathan Simon <jbsimon@google.com>, Arsen A. Gutsal <arsen@softsky.com.ua>",
   "license": "Apache Version 2.0",
   "dependencies": {
     "async": "^1.5.0",
