@@ -20,10 +20,14 @@ block content
   script(src='/js/friends.js')
   script(src='/js/facebook-auth.js')
 
+  .fb-like(data-share="true",data-width="450")
+  .fb-send(data-href="http://www.reliable.report/facebook/friends/me", data-layout="button_count", data-ref="me")
+  .fb-login-button(scope="public_profile,user_friends,email", onlogin="checkLoginState();")b
+
   h3 Список Друзів
     small (БЕТА)
 
-  include fb-panel.html
+  //include fb-panel.html
 
   #people.isotope(data-me="/#{id}")
 

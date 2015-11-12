@@ -37,6 +37,14 @@ html(lang="en")
     meta(name="msapplication-TileImage", content="/mstile-144x144.png")
     meta(name="theme-color", content="#ffffff")
 
+    // You can use open graph tags to customize link previews.
+    // Learn more: https://developers.facebook.com/docs/sharing/webmasters
+    meta(property="og:url",content="http://www.reliable.report/facebook/friends/me")
+    meta(property="og:type",content="website")
+    meta(property="og:title",content="My Facebook Friends")
+    meta(property="og:description",content="Some desc")
+    meta(property="og:image",content="http://s3.aws.amazon.com")
+
     block js
       script(src='//www.google.com/jsapi')
       script(src='/js/lodash.min.js')
@@ -45,23 +53,6 @@ html(lang="en")
 
       if ENV_DEVELOPMENT
         script(src='http://localhost:35729/livereload.js')
-
-  // Facebook Pixel Code
-  script(type="text/javascript").
-    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
-    document,'script','//connect.facebook.net/en_US/fbevents.js');
-
-    fbq('init', '1691246671091487');
-    fbq('track', "PageView");
-
-    //- noscript
-    //-   img(height="1", width="1", style="display:none",
-    //-     src="https://www.facebook.com/tr?id=1691246671091487&ev=PageView&noscript=1")
-
-  // End Facebook Pixel Code
 
   body
     .navbar.navbar-default

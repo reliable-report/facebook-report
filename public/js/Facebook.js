@@ -22,7 +22,7 @@ console.log(splitted);
 let handler;
 
 class Facebook {
-    constructor(accessToken){
+  constructor(accessToken){
 	this.accessToken = accessToken;
 	this.jobs = {};
     }
