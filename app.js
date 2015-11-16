@@ -18,6 +18,7 @@ var express = require('express');
 var session = require('cookie-session');
 var config = require('./config');
 var logging = require('./lib/logging')();
+var favicon = require('serve-favicon');
 
 var app = express();
 
@@ -46,6 +47,9 @@ var oauth2 = require('./lib/oauth2')(config.oauth2);
 app.use(oauth2.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+// favicon
+app.use(favicon(__dirname + '/public/img/favicon.ico'));
 
 // Setup modules and dependencies
 var background = require('./lib/background')(config.gcloud, logging);
