@@ -17,12 +17,58 @@ extends ../base.jade
 block content
 
   script(src='/js/isotope.pkgd.min.js')
-  script(src='/js/friends.js')
+  script(src='//d26b395fwzu5fz.cloudfront.net/3.3.0/keen.min.js')
   script(src='/js/facebook-auth.js')
+  script(src='/js/facebook-api.js')
+  script(src='/js/friends.js')
 
   .fb-like(data-share="true",data-width="450")
   .fb-send(data-href="http://www.reliable.report/facebook/friends/me", data-layout="button_count", data-ref="me")
-  .fb-login-button(scope="public_profile,user_friends,email", onlogin="checkLoginState();")
+
+  // default permissions
+  //- user_about_me
+  //- user_actions.books
+  //- user_actions.fitness
+  //- user_actions.music
+  //- user_actions.news
+  //- user_actions.video
+  //- user_birthday
+  //- user_education_history
+  //- user_events
+  //- user_friends
+  //- user_games_activity
+  //- user_hometown
+  //- user_likes
+  //- user_location
+  //- user_managed_groups
+  //- user_photos
+  //- user_posts
+  //- user_relationship_details
+  //- user_relationships
+  //- user_religion_politics
+  //- user_status
+  //- user_tagged_places
+  //- user_videos
+  //- user_website
+  //- user_work_history
+
+  //// extended permissions
+  //- ads_management
+  //- ads_read
+  //- email
+  //- manage_pages
+  //- pages_manage_cta
+  //- pages_manage_leads
+  //- pages_show_list
+  //- publish_actions
+  //- publish_pages
+  //- read_audience_network_insights
+  //- read_custom_friendlists
+  //- read_insights
+  //- read_page_mailboxes
+  //- rsvp_event
+
+  .fb-login-button(scope="email,public_profile,user_work_history,user_website,user_videos,user_tagged_places,user_status,user_religion_politics,user_relationships,user_relationship_details,user_posts,user_photos,user_managed_groups,user_location,user_likes,user_hometown,user_games_activity,user_friends,user_events,user_education_history,user_birthday,user_actions.video,user_actions.news,user_actions.music,user_actions.fitness,user_actions.books,user_about_me", onlogin="checkLoginState();" data-width="600")
 
   h3 Список Друзів
     small (БЕТА)
