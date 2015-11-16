@@ -33,7 +33,7 @@ const getMetadata = (path, cbFields, cbConnections, cbData) => {
 
 const processMetadataFields = (path, fields, cb) => {
   const passingFields = _.chain(fields).map(_.property('name')).xor(EXCLUDED_FIELDS).value();
-	console.log('Fields:', _.each(passingFields, (it) => { console.log(it) }));
+	console.log(path, 'Fields:', _.each(passingFields, (it) => { console.log(it) }));
 
   FB.api(path, 'GET', {fields: passingFields}, cb);
 }
@@ -50,7 +50,7 @@ const processMetadataConnections = (path, connections) => {
 };
 
 const processData = (path, data, cb) => {
-  console.log('Data:', data);
+  console.log(path, 'Data:', data);
   _.call(cb, data);
 }
 
