@@ -27,6 +27,7 @@
     "mysql": "^2.9.0",
     "prompt": "^0.2.14",
     "request": "^2.65.0",
+    "serve-favicon": "^2.3.0",
     "winston": "^1.1.1"
   },
   "engines": {
