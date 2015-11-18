@@ -7,6 +7,8 @@ class Api {
   }
 }
 
+const FIELDS_TO_EXCLUDE = ['ad_campaign'];
+
 class FacebookApi extends Api{
   constructor(apiKey){
     super(apiKey);
@@ -19,7 +21,7 @@ class FacebookApi extends Api{
       version:'v2.5'});
   }
 
-  api(path, method, options, callback){
+  api(path, method, options, fields, connections, callback){
     if(options.fields){
       FB.api(path, method, _.extend(options, {access_token: this.apiKey}), callback);
     } else {
@@ -28,7 +30,9 @@ class FacebookApi extends Api{
         metadata:true
       }), (response) => {
         if(response && response.metadata){
-          const fields = _.map(response.metadata.fields, _.property('name'));
+          fields && _.assign(fields, _.map(response.metadata.fields, _.property('name')));
+          _.remove(fields, (it) => { return _.indexOf(FIELDS_TO_EXCLUDE, it) > -1 }); // removing some fields
+          connections && _.assign(connections, _.map(response.metadata.connections, (it, name) => { var o = {};o[name] = it;return o}));
           FB.api(path, method, _.extend({
             access_token: this.apiKey,
             fields: fields
@@ -56,7 +60,7 @@ window.addEventListener('message', (event) => {
 
   } else
   if(event.data === 'fbLoginCompleted'){
-    facebookApi = new FacebookApi('CAACEdEose0cBAB1GAVhuMZCRzvjJlAghywMKAvhZCYZCCORtcGut2K6vUFLf88hhfhtXKNkzhYSKzON40noIF03DCN1KjYMxOza8zHX9WqySc3A7SupDMLG2K5dz3teGIMYY6i2PVfDMAjyL9DuNeXm3B1w0FlOhJekDykQ9gPQcZC1xn8zroF8Ln3dV07kZD');
+    facebookApi = new FacebookApi('CAACEdEose0cBABQ7YwyM2YLtbNBZBMBwOq6VYIQr7y0uvhJMqIDkX9WQX836kFgCPHZCs361mbToND2HpK50aMbF3Rkq8iWVpTPaHJyNtOwDQmhjdQL1z1ATsvMVQLRTzpTVejWBhZA47kZCWInvjDfZBAewncZC2OppAvSkJZCIUgrXWfufvqhnhH1T6Isab6hlbLp8zZAncAZDZD');
 
     var object = {
       posts: []
@@ -69,7 +73,7 @@ window.addEventListener('message', (event) => {
       } else {
         Array.prototype.push.apply(root, response.data); // can't use concat here, as we need root mutation
 
-	      if(response.paging && response.paging.next){
+	      if(response.paging && response.paging.next && response.data.length){
           const url = new URL(response.paging.next),
 		            // FIXME: optimize through substring
 		            path = '/' + url.pathname.split(/\//).slice(-2).join('/'), // /v2.5/188091631526192/posts -> /188091631526192/posts
@@ -81,7 +85,7 @@ window.addEventListener('message', (event) => {
                   return o
 		            }),
                 options = _.reduce(opts, function(memo, current) { return _.extend(memo, current) },  {});
-          facebookApi.api(path, 'GET', options, (response) => {
+          facebookApi.api(path, 'GET', options, undefined, undefined, (response) => {
             mergeResults(response, root, done);
 
           });
@@ -91,52 +95,52 @@ window.addEventListener('message', (event) => {
       }
     }
 
-    let pageId;
+    let pageId, fields = [], connections = [];
     facebookApi.api('/me', 'GET', {
-      fields: undefined,
-//["id","about","affiliation","app_id","app_links","artists_we_like","attire","awards","band_interests","band_members","best_page","bio","birthday","booking_agent","built","business","can_checkin","can_post","category","category_list","company_overview","contact_address","context","country_page_likes","cover","culinary_team","current_location","description","description_html","directed_by","display_subtext","emails","features","food_styles","founded","general_info","general_manager","genre","global_brand_page_name","global_brand_root_id","has_added_app","leadgen_tos_accepted","hometown","hours","influences","is_community_page","is_permanently_closed","is_published","price_range","is_unclaimed","is_verified","link","location","mission","mpg","name","network","new_like_count","offer_eligible","parent_page","parking","payment_options","personal_info","personal_interests","pharma_safety_info","phone","plot_outline","press_contact","produced_by","products","promotion_eligible","promotion_ineligible_reason","public_transit","record_label","release_date","restaurant_services","restaurant_specialties","schedule","screenplay_by","season","starring","store_number","studio","talking_about_count","engagement","single_line_address","place_type","unread_message_count","username","unread_notif_count","unseen_message_count","voip_info","website","were_here_count","written_by","owner_business","last_used_time","asset_score","checkins","likes","members"]
       metadata:true
-
-    }, (response) => {
-      var fields = _.map(response.metadata.fields,_.property('name'));
+    }, fields, connections, (response) => {
       console.log('Fields captured:', fields);
+      console.log('Connections captured:', connections);
       _.extend(object, response);
       keenClient.addEvent("pages", object, (err, res) => {
         if(err) {
           console.log(err);
         } else {
           console.log(res);
+
+          _.each(connections, (obj) => {
+            // FIXME hate that, optimize
+            const name = _.keys(obj)[0],
+            	  con = new URL(_.values(obj)[0]).pathname;
+
+            object[name] = [];
+            facebookApi.api(con, 'GET', {
+            	metadata: true
+            }, fields, connections, (response) => {
+              const done = (obj) => {
+                console.log('Final object:', obj);
+                _.each(object[name], (it) => {
+                  it.keen = {};
+                  //it.keen.id = it.id?it.id:undefined;
+                  it.keen.timestamp = it.created_time?new Date(it.created_time).toISOString():undefined;
+                  it.pageId = object.id;
+                });
+                const event = {};
+                event[name] = obj;
+                keenClient.addEvents(event, (err, res) => {
+                  if(err) {
+                    console.log(err);
+                  } else {
+                    console.log(res);
+                  }
+                });
+              };
+              mergeResults(response, object[name], done);
+            });
+          })
         }
       });
     });
-
-    facebookApi.api('/me/posts', 'GET', {
-      //fields: ['likes.limit(100)','comments.limit(100)','shares','message','link','admin_creator','caption','created_time','description','from','full_picture','icon','id','attachments.limit(100){description,description_tags}'],
-
-      fields: undefined,
-//["id","admin_creator", "application", "call_to_action", "caption", "created_time","description","feed_targeting", "from", "icon", "is_published", "is_hidden", "message", "message_tags", "link", "name", "object_id", "picture", "place", "privacy", "properties", "shares", "source", "status_type","story","story_tags", "targeting", "to", "type", "updated_time", "with_tags"]
-      limit: 100,
-      include_hidden: true,
-    }, (response) => {
-      const done = (obj) => {
-        console.log('Final object:', obj);
-        _.each(object.posts, (it) => {
-          it.keen = {
-            timestamp: new Date(it.created_time).toISOString()
-          };
-          it.pageId = object.id;
-
-        });
-        keenClient.addEvents({"posts": object.posts}, (err, res) => {
-          if(err) {
-            console.log(err);
-          } else {
-            console.log(res);
-          }
-        });
-      };
-      mergeResults(response, object.posts, done);
-    });
-
+    window.object = object;
   }
 });
